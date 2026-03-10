@@ -17,5 +17,4 @@ ENV OPENCLAW_WORKSPACE_DIR=/app
 
 EXPOSE 18789
 
-
-CMD ["npx", "openclaw", "gateway", "run", "--allow-unconfigured", "--port", "18789"]
+CMD ["npx", "openclaw", "gateway", "run", "--allow-unconfigured", "--port", "18789", "--host", "0.0.0.0"]
