@@ -1,6 +1,5 @@
 FROM node:22-bookworm-slim
 
-
 RUN apt-get update && apt-get install -y \
     python3 \
     curl \
@@ -11,12 +10,11 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 COPY . .
 
+# CRITICAL: Force Node to stay under 400MB and cleanup constantly
+ENV NODE_OPTIONS="--max-old-space-size=400 --gc-interval=50"
+# Disable memory-heavy features we don't need for the demo
+ENV OPENCLAW_TELEMETRY=false
+ENV OPENCLAW_PLUGINS_DISABLE="web-search,vision"
 
-ENV PORT=18789
-ENV OPENCLAW_WORKSPACE_DIR=/app
-
-EXPOSE 18789
-
-# 'auto' allows the gateway to bind to the Railway network interface automatically
-ENTRYPOINT ["npx", "openclaw", "gateway", "run"]
+ENTRYPOINT ["node", "--max-old-space-size=400", "/usr/local/bin/openclaw", "gateway", "run"]
 CMD ["--allow-unconfigured", "--port", "18789", "--bind", "auto"]
