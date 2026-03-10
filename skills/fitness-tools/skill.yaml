@@ -1,0 +1,5 @@
+name: fitness-tools
+description: Logic for calculating fitness metrics and generating plans.
+permissions:
+  - filesystem:write
+  - python:execute
