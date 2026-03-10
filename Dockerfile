@@ -1,7 +1,22 @@
-FROM node:20
-RUN apt-get update && apt-get install -y python3
+FROM node:22-bookworm-slim
+
+# Install Python and OpenClaw
+RUN apt-get update && apt-get install -y python3 python3-pip curl && \
+    npm install -g openclaw@latest && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
+
+# Copy all files
 COPY . .
-RUN npm install -g openclaw
-EXPOSE 3000
-CMD ["openclaw", "gateway", "start", "--port", "3000"]
+
+# Environment setup
+ENV OPENCLAW_WORKSPACE_DIR=/app
+ENV OPENCLAW_GATEWAY_PORT=18789
+ENV OPENCLAW_GATEWAY_BIND=0.0.0.0
+ENV NODE_ENV=production
+
+EXPOSE 18789
+
+# Start Gateway
+CMD ["openclaw", "gateway", "start", "--foreground", "--allow-unconfigured"]

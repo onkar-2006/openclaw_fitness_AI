@@ -1,0 +1,11 @@
+{
+  "name": "my-fitness-coach",
+  "version": "1.0.0",
+  "description": "AI Fitness Agent for 91Agents Interview",
+  "scripts": {
+    "start": "openclaw gateway start"
+  },
+  "dependencies": {
+    "openclaw": "latest"
+  }
+}

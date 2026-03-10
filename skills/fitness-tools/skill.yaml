@@ -1,5 +1,16 @@
 name: fitness-tools
-description: Logic for calculating fitness metrics and generating plans.
-permissions:
-  - filesystem:write
-  - python:execute
+description: Tools for calculating fitness metrics like BMR and Macros.
+tools:
+  - name: calculate_macros
+    description: Calculates daily protein and calorie targets based on weight and goal.
+    parameters:
+      type: object
+      properties:
+        weight:
+          type: number
+          description: User weight in kg.
+        goal:
+          type: string
+          enum: [muscle, weight-loss]
+    container:
+      command: ["python3", "/app/skills/fitness-tools/coach_tools.py"]
