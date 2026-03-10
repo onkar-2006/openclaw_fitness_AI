@@ -25,4 +25,4 @@ EXPOSE 10000
 
 # Remove '--foreground' as it's now the default in 2026 gateway start
 # We use 'npx' to ensure we call the local binary if global fails
-CMD ["npx", "openclaw", "gateway", "start", "--allow-unconfigured"]
+CMD ["npx", "openclaw", "gateway", "run"]
