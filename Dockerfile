@@ -1,6 +1,6 @@
 FROM node:22-bookworm-slim
 
-# Add git to the install list so npm can fetch OpenClaw dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     python3 \
     curl \
@@ -10,16 +10,19 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Copy all files
+# Copy project files
 COPY . .
 
 # Environment setup
 ENV OPENCLAW_WORKSPACE_DIR=/app
-ENV OPENCLAW_GATEWAY_PORT=18789
+# Render provides the $PORT variable automatically, 
+# but we'll default it to 10000 which Render likes.
+ENV PORT=10000
+ENV OPENCLAW_GATEWAY_PORT=10000
 ENV OPENCLAW_GATEWAY_BIND=0.0.0.0
-ENV NODE_ENV=production
 
-EXPOSE 18789
+EXPOSE 10000
 
-# Start Gateway
-CMD ["openclaw", "gateway", "start", "--foreground", "--allow-unconfigured"] 
+# Remove '--foreground' as it's now the default in 2026 gateway start
+# We use 'npx' to ensure we call the local binary if global fails
+CMD ["npx", "openclaw", "gateway", "start", "--allow-unconfigured"]
