@@ -1,20 +1,19 @@
-FROM node:22-bookworm-slim
+# Alpine is the lightest possible Linux for Docker
+FROM node:22-alpine
 
-RUN apt-get update && apt-get install -y \
-    python3 \
-    curl \
-    git \
-    && npm install -g openclaw@latest \
-    && rm -rf /var/lib/apt/lists/*
+# Install only essential tools
+RUN apk add --no-cache python3 py3-pip curl git
 
 WORKDIR /app
 COPY . .
 
-# Remove the offending gc-interval from here
-ENV NODE_OPTIONS="--max-old-space-size=400"
+# Force Node to be extremely aggressive with memory
+ENV NODE_OPTIONS="--max-old-space-size=350"
+# DISABLE memory-heavy features
 ENV OPENCLAW_TELEMETRY=false
-ENV OPENCLAW_PLUGINS_DISABLE="web-search,vision"
+ENV OPENCLAW_PLUGINS_DISABLE="web-search,vision,browser,history-sync"
+ENV OPENCLAW_STORAGE_TYPE=disk
 
-# We pass the memory limit directly to the node process
-ENTRYPOINT ["node", "--max-old-space-size=400"]
+# Use a direct path to the binary to save execution overhead
+ENTRYPOINT ["node", "--max-old-space-size=350"]
 CMD ["/usr/local/bin/openclaw", "gateway", "run", "--allow-unconfigured", "--port", "18789", "--bind", "auto"]
