@@ -10,11 +10,11 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 COPY . .
 
-# CRITICAL: Force Node to stay under 400MB and cleanup constantly
-ENV NODE_OPTIONS="--max-old-space-size=400 --gc-interval=50"
-# Disable memory-heavy features we don't need for the demo
+# Remove the offending gc-interval from here
+ENV NODE_OPTIONS="--max-old-space-size=400"
 ENV OPENCLAW_TELEMETRY=false
 ENV OPENCLAW_PLUGINS_DISABLE="web-search,vision"
 
-ENTRYPOINT ["node", "--max-old-space-size=400", "/usr/local/bin/openclaw", "gateway", "run"]
-CMD ["--allow-unconfigured", "--port", "18789", "--bind", "auto"]
+# We pass the memory limit directly to the node process
+ENTRYPOINT ["node", "--max-old-space-size=400"]
+CMD ["/usr/local/bin/openclaw", "gateway", "run", "--allow-unconfigured", "--port", "18789", "--bind", "auto"]
