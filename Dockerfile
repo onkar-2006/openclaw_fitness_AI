@@ -9,20 +9,20 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-# Copy project files
 COPY . .
 
-# Environment setup
+# --- CRITICAL FIX FOR MEMORY ---
+# This tells Node.js to cap memory usage at 300MB, leaving room for the OS
+ENV NODE_OPTIONS="--max-old-space-size=300"
+# Disable heavy telemetry/monitoring that eats RAM
+ENV OPENCLAW_TELEMETRY=false
+
 ENV OPENCLAW_WORKSPACE_DIR=/app
-# Render provides the $PORT variable automatically, 
-# but we'll default it to 10000 which Render likes.
 ENV PORT=10000
 ENV OPENCLAW_GATEWAY_PORT=10000
 ENV OPENCLAW_GATEWAY_BIND=0.0.0.0
 
 EXPOSE 10000
 
-# Remove '--foreground' as it's now the default in 2026 gateway start
-# We use 'npx' to ensure we call the local binary if global fails
-CMD ["npx", "openclaw", "gateway", "run", "--allow-unconfigured"]
+# Using direct node call to ensure flags are respected
+CMD ["sh", "-c", "npx openclaw gateway run --allow-unconfigured --port ${PORT:-10000}"]
