@@ -18,4 +18,4 @@ ENV OPENCLAW_WORKSPACE_DIR=/app
 EXPOSE 18789
 
 ENTRYPOINT ["npx", "openclaw", "gateway", "run"]
-CMD ["--allow-unconfigured", "--port", "18789", "--host", "0.0.0.0"]
+CMD ["--allow-unconfigured", "--port", "18789", "--bind", "0.0.0.0"]
